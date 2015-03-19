@@ -55,7 +55,7 @@ public class NotifyUtil {
 			return false;
 		}
 		if(log.isDebugEnabled()){
-			log.debug(String.format("%s,url=%s,postJson=", notifiable.getDesc(),notifiable.getNotifyUrl(),postJson));
+			log.debug(String.format("%s,url=%s,postJson=%s", notifiable.getDesc(),notifiable.getNotifyUrl(),postJson));
 		}
 		boolean flag = httpreq.isCallBackSuccessByStream(
 				notifiable.getNotifyUrl(), postJson);
