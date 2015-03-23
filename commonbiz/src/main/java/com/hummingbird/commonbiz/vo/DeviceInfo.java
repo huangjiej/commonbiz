@@ -3,6 +3,8 @@
  */
 package com.hummingbird.commonbiz.vo;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
 
@@ -33,7 +35,15 @@ public class DeviceInfo {
      */
     protected String mac;
 
-    /**
+    
+	/**
+	 * 构造函数
+	 */
+	public DeviceInfo() {
+		
+	}
+
+	/**
      * @return sim卡设备号
      */
     public String getImsi() {
