@@ -12,6 +12,23 @@ import java.util.Date;
  * 2015年1月26日 上午11:26:37
  * 本类主要做为通知的顶级接口
  */
-public interface Notification {
+public interface PaymentNotification extends Notification {
 
+	/**
+	 * 对应的订单
+	 * @return
+	 */
+	String getOrderId();
+	
+	/**
+	 * 支付时间
+	 * @return
+	 */
+	Date getPaytime();
+	
+	/**
+	 * 是否支付成功
+	 * @return
+	 */
+	boolean isPaySuccessed();
 }
