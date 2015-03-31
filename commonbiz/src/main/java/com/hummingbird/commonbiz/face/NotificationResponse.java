@@ -12,4 +12,13 @@ package com.hummingbird.commonbiz.face;
  */
 public interface NotificationResponse {
 
+	/**
+	 * 执行通知的回应
+	 * @param responsor
+	 * @return
+	 */
+	public Object doReply(NotificationResponsor responsor);
+	
+	
+	
 }

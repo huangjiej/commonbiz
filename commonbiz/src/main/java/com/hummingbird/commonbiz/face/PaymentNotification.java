@@ -31,4 +31,10 @@ public interface PaymentNotification extends Notification {
 	 * @return
 	 */
 	boolean isPaySuccessed();
+	
+	/**
+	 * 支付金额，单位为分
+	 * @return
+	 */
+	Integer getSum();
 }
