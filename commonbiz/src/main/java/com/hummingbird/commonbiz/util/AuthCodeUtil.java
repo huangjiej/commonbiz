@@ -118,15 +118,21 @@ public abstract class AuthCodeUtil {
 		{
 			log.trace("手机验证码信息是："+code);;
 		}
-		if(code!=null&&code.getSmscode().equals(authCode)&&(code.getSendtime().getTime()+code.getExpirein()*1000)>System.currentTimeMillis()){
+		try{
+			if(code!=null&&code.getSmscode().equals(authCode)&&(code.getSendtime().getTime()+code.getExpirein()*1000)>System.currentTimeMillis()){
+				return true;
+			}
+			return false;
+			
+		}
+		finally{
 			//删除验证码
 			smsmapper.deleteAuthCode(query);
-			return true;
+			
 		}
 //		String authCode2 = getAuthCode(appId,mobileNum);
 //		System.out.println("生成的验证码为"+authCode2);
 //		return authCode2.equals(authCode);
-		return false;
 	}
 	
 	/**
