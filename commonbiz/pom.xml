@@ -235,6 +235,9 @@
 						<configuration>
 							<excludes>
 							</excludes>
+						    <includes>
+						    	<include>**/*.xml</include>  
+						    </includes>
 						</configuration>
 					</execution>
 				</executions>
