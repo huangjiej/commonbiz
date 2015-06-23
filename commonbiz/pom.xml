@@ -208,6 +208,13 @@
 	</dependencies>
 	<build>
 		<finalName>commonbiz</finalName>
+		<resources>
+	    	<resource>
+	    		<directory>src/main/java/</directory>
+	    		<excludes><exclude>**/*.java</exclude></excludes>
+	    		<filtering>false</filtering>
+	    	</resource>
+	    </resources>
 		<plugins>
 		<plugin>
              <groupId>org.apache.maven.plugins</groupId>
@@ -236,7 +243,6 @@
 							<excludes>
 							</excludes>
 						    <includes>
-						    	<include>**/*.xml</include>  
 						    </includes>
 						</configuration>
 					</execution>
