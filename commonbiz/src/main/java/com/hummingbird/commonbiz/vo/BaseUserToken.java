@@ -12,7 +12,6 @@ public class BaseUserToken implements UserToken {
 	private String mobileNum;
 	private String appId;
 	private String token;
-//	private int 
 	/**
 	 * 有效期
 	 */
@@ -31,7 +30,6 @@ public class BaseUserToken implements UserToken {
 
 	public BaseUserToken() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public BaseUserToken(String appId, String mobileNum, String token) {
@@ -46,7 +44,6 @@ public class BaseUserToken implements UserToken {
 	 */
 	@Override
 	public String getToken() {
-		// TODO Auto-generated method stub
 		return token;
 	}
 
@@ -64,7 +61,6 @@ public class BaseUserToken implements UserToken {
 	 */
 	@Override
 	public String getMobileNum() {
-		// TODO Auto-generated method stub
 		return mobileNum;
 	}
 
