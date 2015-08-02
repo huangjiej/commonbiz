@@ -113,4 +113,13 @@ public class BaseTransVO<DETAIL> implements Decidable {
 		this.body = body;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "BaseTransVO [app=" + app + ", tsig=" + tsig + ", body=" + body
+				+ "]";
+	}
+
 }
