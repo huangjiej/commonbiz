@@ -34,6 +34,11 @@ public class DeviceInfo {
      * sim所属设备的mac地址
      */
     protected String mac;
+    
+    /**
+     * 设备id,由imsi_imei_mac 生成的不重复的id
+     */
+    protected String deviceId;
 
     
 	/**
@@ -138,7 +143,8 @@ public class DeviceInfo {
 	@Override
 	public String toString() {
 		return "DeviceInfo [imsi=" + imsi + ", mobileNum=" + mobileNum
-				+ ", imei=" + imei + ", mac=" + mac + "]";
+				+ ", imei=" + imei + ", mac=" + mac + ", deviceId=" + deviceId
+				+ "]";
 	}
 	
 	/**
@@ -150,6 +156,20 @@ public class DeviceInfo {
 			return imei+"_"+mac;
 		}
 		return null;
+	}
+
+	/**
+	 * @return the deviceId
+	 */
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	/**
+	 * @param deviceId the deviceId to set
+	 */
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 	
 	
