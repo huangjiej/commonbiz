@@ -20,7 +20,7 @@ import com.hummingbird.commonbiz.face.AppObj;
  * @author huangjiej_2
  * 2014年11月11日 上午8:39:44
  */
-@JsonIgnoreProperties(value = {"appKey", "appname"})
+@JsonIgnoreProperties(value = {"appKey", "appname","type","authed"})
 public class AppVO extends Signaturable implements AppObj,Decidable {
 	
 	protected String appId;

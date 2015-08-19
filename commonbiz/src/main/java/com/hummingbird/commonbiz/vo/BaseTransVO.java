@@ -5,11 +5,21 @@
  */
 package com.hummingbird.commonbiz.vo;
 
+import java.io.ByteArrayInputStream;
+import java.security.PublicKey;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.hummingbird.common.exception.SignatureException;
+import com.hummingbird.common.exception.ValidateException;
+import com.hummingbird.common.util.CertificateUtils;
+import com.hummingbird.common.util.SignatureUtil;
+import com.hummingbird.common.util.ValidateUtil;
+import com.hummingbird.common.vo.PainttextAble;
 
 /**
  * @author john huang
@@ -18,6 +28,14 @@ import com.hummingbird.common.exception.SignatureException;
  */
 public class BaseTransVO<DETAIL> implements Decidable {
 
+	org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory
+			.getLog(this.getClass());
+	
+	/**
+	 * 公钥,验签用,通过
+	 */
+	protected String publickey;
+	
 	/**
 	 * 发起应用信息
 	 */
@@ -30,7 +48,7 @@ public class BaseTransVO<DETAIL> implements Decidable {
 	 * 主体内容
 	 */
 	protected  DETAIL body;
-
+	
 	/**
 	 * 构造函数
 	 */
@@ -82,7 +100,7 @@ public class BaseTransVO<DETAIL> implements Decidable {
 	@Override
 	@JsonIgnore
 	public void setOtherParam(Map map) {
-		
+		publickey =ObjectUtils.toString(map.get("appPublicKey"));
 		
 	}
 
@@ -92,8 +110,19 @@ public class BaseTransVO<DETAIL> implements Decidable {
 	@Override
 	@JsonIgnore
 	public boolean isAuthed() throws SignatureException {
-		if(tsig!=null){
-			//TODO 待处理
+		if(tsig!=null)
+		{
+			String painttext;
+			if (body instanceof PainttextAble) {
+				PainttextAble pa = (PainttextAble) body;
+				painttext =  pa.getPaintText();
+				SignatureUtil.validateSignature(tsig.getOrderMD5(),SignatureUtil.SIGNATURE_TYPE_MD5 ,painttext);
+			}
+			else{
+				painttext="未实现的自动获取内容功能";
+				//反射获取所有
+			}
+			validateTransOrderSign(painttext);
 		}
 		
 		return true;
@@ -120,6 +149,76 @@ public class BaseTransVO<DETAIL> implements Decidable {
 	public String toString() {
 		return "BaseTransVO [app=" + app + ", tsig=" + tsig + ", body=" + body
 				+ "]";
+	}
+	
+	/**
+	 * 验证TransOrder的签名
+	 * @param transorder
+	 * @throws SignatureException 
+	 */
+	protected void validateTransOrderSign(String painttext) throws SignatureException {
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("验证TransOrder的签名"));
+		}
+		
+		boolean success;
+		if(tsig.getSignature().length()!=32||tsig.getSignature().contains("="))
+		{//使用rsa签名
+			String mingwen = ValidateUtil.sortbyValues(tsig.getTimeStamp(),tsig.getNonce(),tsig.getOrderMD5(),app.getAppId());
+			String signature = tsig.getSignature();
+			if(StringUtils.isBlank(publickey))
+			{
+				if (log.isDebugEnabled()) {
+					log.debug(String.format("公钥，无法进行验签"));
+				}
+				throw ValidateException.ERROR_SIGNATURE_RSA;
+				//throw new SignatureException(ValidateException.ERRCODE_SIGNATURE_FAIL,"签名验签不通过,app无公钥");
+			}
+			try {
+				PublicKey pkey = CertificateUtils.getPublicKeyFromCer(new ByteArrayInputStream(Base64.decodeBase64(publickey)));
+				success = CertificateUtils.verifySignatureByPublicKey(mingwen.getBytes(), signature, pkey);
+			} catch (Exception e) {
+				if (log.isDebugEnabled()) {
+					log.error(String.format("TransOrder请求签名验签出错"),e);
+				}
+				SignatureException e1 = ValidateException.ERROR_SIGNATURE_RSA.clone(e);
+				throw e1;
+//				throw new SignatureException(ValidateException.ERRCODE_SIGNATURE_FAIL,"签名验签不通过",e);
+			}
+			
+			if(!success)
+			{
+				if (log.isDebugEnabled()) {
+					log.debug(String.format("TransOrder请求签名验签不通过"));
+				}
+				SignatureException e1 = ValidateException.ERROR_SIGNATURE_RSA;
+				throw e1;
+			}
+			else{
+				if (log.isDebugEnabled()) {
+					log.debug(String.format("TransOrder请求签名验签通过"));
+				}
+				
+			}
+		}
+		else{
+			
+			success=SignatureUtil.validateSignature(tsig.getSignature(), SignatureUtil.SIGNATURE_TYPE_MD5,tsig.getTimeStamp(),tsig.getNonce(),tsig.getOrderMD5(),app.getAppId() );
+			if(!success)
+			{
+				if (log.isDebugEnabled()) {
+					log.debug(String.format("TransOrder请求签名验签不通过"));
+				}
+				SignatureException e1 = ValidateException.ERROR_SIGNATURE_MD5;
+				throw e1;
+			}
+			else{
+				if (log.isDebugEnabled()) {
+					log.debug(String.format("TransOrder请求签名验签通过"));
+				}
+				
+			}
+		}
 	}
 
 }
