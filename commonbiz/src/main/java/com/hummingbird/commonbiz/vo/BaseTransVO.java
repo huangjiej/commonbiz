@@ -14,6 +14,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.hummingbird.common.exception.DataInvalidException;
 import com.hummingbird.common.exception.SignatureException;
 import com.hummingbird.common.exception.ValidateException;
 import com.hummingbird.common.util.CertificateUtils;
@@ -90,7 +91,6 @@ public class BaseTransVO<DETAIL> implements Decidable {
 	@Override
 	@JsonIgnore
 	public int getType() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -116,11 +116,21 @@ public class BaseTransVO<DETAIL> implements Decidable {
 			if (body instanceof PainttextAble) {
 				PainttextAble pa = (PainttextAble) body;
 				painttext =  pa.getPaintText();
-				SignatureUtil.validateSignature(tsig.getOrderMD5(),SignatureUtil.SIGNATURE_TYPE_MD5 ,painttext);
+				if(!SignatureUtil.validateSignature(tsig.getOrderMD5(),SignatureUtil.SIGNATURE_TYPE_MD5 ,painttext)){
+					throw ValidateException.ERROR_SIGNATURE_MD5.clone(null,"body签名不一致");
+				}
 			}
 			else{
-				painttext="未实现的自动获取内容功能";
-				//反射获取所有
+				try {
+					painttext=ValidateUtil.getPaintText(body);
+				} catch (DataInvalidException e) {
+					log.error(String.format("获取body的明文失败"),e);
+					throw ValidateException.ERROR_SIGNATURE_MD5.clone(e,"body明文验签失败");
+				}
+				if(!SignatureUtil.validateSignature(tsig.getOrderMD5(),SignatureUtil.SIGNATURE_TYPE_MD5 ,painttext)){
+					throw ValidateException.ERROR_SIGNATURE_MD5.clone(null,"body签名不一致");
+				}
+				
 			}
 			validateTransOrderSign(painttext);
 		}
@@ -162,7 +172,7 @@ public class BaseTransVO<DETAIL> implements Decidable {
 		}
 		
 		boolean success;
-		if(tsig.getSignature().length()!=32||tsig.getSignature().contains("="))
+		if(tsig.getSignature().length()>32||tsig.getSignature().contains("="))
 		{//使用rsa签名
 			String mingwen = ValidateUtil.sortbyValues(tsig.getTimeStamp(),tsig.getNonce(),tsig.getOrderMD5(),app.getAppId());
 			String signature = tsig.getSignature();

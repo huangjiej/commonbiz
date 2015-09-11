@@ -152,7 +152,7 @@ public class DeviceInfo {
 	 * @return
 	 */
 	public String getIMEIMac(){
-		if(StringUtils.isNotBlank(imei)&&StringUtils.isNotBlank(mac)){
+		if(StringUtils.isNotBlank(imei)||StringUtils.isNotBlank(mac)){
 			return imei+"_"+mac;
 		}
 		return null;
