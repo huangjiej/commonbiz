@@ -5,7 +5,7 @@
  */
 package com.hummingbird.commonbiz.vo;
 
-import com.hummingbird.commonbiz.face.Pagingnation;
+import com.hummingbird.common.face.Pagingnation;
 
 /**
  * @author huangjiej_2
