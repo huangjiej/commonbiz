@@ -13,29 +13,31 @@ import com.hummingbird.common.exception.ValidateException;
  */
 public class TokenException extends ValidateException {
 
+	
+	
 	public TokenException() {
 		super();
-		// TODO Auto-generated constructor stub
+		super.errcode = 10707;
 	}
 
 	public TokenException(int errcode, String message) {
 		super(errcode, message);
-		// TODO Auto-generated constructor stub
+		super.errcode = 10707;
 	}
 
 	public TokenException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
+		super.errcode = 10707;
 	}
 
 	public TokenException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
+		super.errcode = 10707;
 	}
 
 	public TokenException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
+		super.errcode = 10707;
 	}
 
 	/**
@@ -49,6 +51,5 @@ public class TokenException extends ValidateException {
 
 	public TokenException(int errcode, String message, Throwable cause) {
 		super(errcode, message, cause);
-		// TODO Auto-generated constructor stub
 	}
 }
